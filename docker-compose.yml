@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: 'mysql'
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      DB_HOST: mysql_db
+    ports:
+      - "$MYSQLDB_HOST_PORT:$MYSQLDB_CONTAINER_PORT"
+    volumes:
+      - my-db:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    ports:
+      - "9000:8080"
+    restart: always
+
+  recipebuddyapp:
+    container_name: recipebuddy-app
+    build:
+      context: ./../RecipeBuddy
+      dockerfile: Dockerfile
+    ports:
+      - "$SPRING_HOST_PORT:$SPRING_CONTAINER_PORT"
+    restart: always
+    depends_on:
+      - db
+    env_file: ./.env
+    environment:
+      - spring.datasource.url=jdbc:mysql://db:$MYSQLDB_CONTAINER_PORT/$MYSQLDB_DOCKER_DATABASE?serverTimezone=UTC&createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true
+      - spring.datasource.username=$MYSQLDB_DOCKER_USER
+      - spring.datasource.password=$MYSQLDB_DOCKER_ROOT_PASSWORD
+      - spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
+
+volumes:
+  my-db:

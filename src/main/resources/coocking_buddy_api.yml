@@ -1,0 +1,136 @@
+openapi: 3.0.0
+info:
+  title: Cooking buddy API
+  version: '1.0.0'
+
+paths:
+  /recipees:
+    get: 
+      summary: List all recipees
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipee'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message: 
+                    type: string
+    post:
+      summary: Create recipee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipee'
+      responses:
+        '201':
+          description: Created
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message: 
+                    type: string
+  /recipees/{name}:
+    get:
+      summary: Get single recipee
+      parameters: 
+        - in: path
+          name: name
+          required: true
+          description: Recipee name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipee'
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message: 
+                    type: string
+    put:
+      summary: Update single recipee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipee'
+      parameters: 
+        - in: path
+          name: name
+          required: true
+          description: Recipee name
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message: 
+                    type: string
+    delete:
+      summary: Remove single recipee
+      parameters: 
+        - in: path
+          name: name
+          required: true
+          description: Recipee name
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message: 
+                    type: string
+components:
+  schemas:
+    recipee:
+      type: object
+      properties:
+        name:
+          type: string
+        instructions:
+          type: string
+        author:
+          type: string
